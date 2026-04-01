@@ -41,16 +41,25 @@
             new FlipBook(el, {
                 pdfUrl: 'test.pdf', 
                 
-                // GitHub Pages 環境非常乾淨，讓引擎自己去找工人即可！
+                // 1. 🎯 核心修正：根據您的截圖，資料夾名稱是 cmaps 而非 pdfjs-cmaps
+                cMapUrl: 'assets/cmaps/', 
+                cMapPacked: true,
+
+                // 2. 確保工人路徑正確
+                pdfjsLib: 'js/libs/pdf.min.js',
+                pdfjsWorker: 'js/libs/pdf.worker.min.js',
                 
-                viewMode: '3d',
+                // 3. 穩定性設定
+                disableRange: true,
+                disableStream: true,
+
+                // 4. 視覺模式與介面 (維持專業設定)
+                viewMode: 'webgl',
                 skin: 'dark',
-                
                 deeplinkingPrefix: 'page_',
                 btnSearch: { enabled: true },
                 btnDownloadPdf: { enabled: true },
                 btnPrint: { enabled: true },
-                
                 pageRoughness: 0.8,
                 lightIntensity: 0.7,
                 menuBackground: 'rgba(51, 51, 51, 0.9)',
@@ -60,6 +69,7 @@
                 sideBtnBackground: 'rgba(0,0,0,0.3)',
                 sideBtnColor: '#ffffff',
 
+                // 繁體中文翻譯
                 strings: {
                     print: '列印',
                     printLeftPage: '列印左頁',
