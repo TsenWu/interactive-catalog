@@ -10,16 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style>
-        html, body {
-            margin: 0; padding: 0; height: 100%;
-            background-color: #222222; overflow: hidden;
-            display: flex; flex-direction: column;
-        }
-        #page-header {
-            height: 60px; background-color: #1a1a1a;
-            display: flex; align-items: center; padding-left: 20px;
-            box-sizing: border-box; border-bottom: 1px solid #333; flex-shrink: 0;
-        }
+        html, body { margin: 0; padding: 0; height: 100%; background-color: #222222; overflow: hidden; display: flex; flex-direction: column; }
+        #page-header { height: 60px; background-color: #1a1a1a; display: flex; align-items: center; padding-left: 20px; border-bottom: 1px solid #333; flex-shrink: 0; }
         #custom-logo { height: 40px; width: auto; }
         #container { flex-grow: 1; width: 100vw; position: relative; }
     </style>
@@ -38,30 +30,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             const el = document.getElementById('container');
 
+            // 🌟 拔除所有路徑綁架，讓原廠引擎自己去資料夾裡找工具！
             new FlipBook(el, {
                 pdfUrl: 'test.pdf', 
                 
-                // 1. 🎯 核心修正：根據您的截圖，資料夾名稱是 cmaps 而非 pdfjs-cmaps
-                cMapUrl: 'assets/cmaps/', 
-                cMapPacked: true,
-
-                // 2. 確保工人路徑正確
-                pdfjsLib: 'js/libs/pdf.min.js',
-                pdfjsWorker: 'js/libs/pdf.worker.min.js',
-                
-                // 3. 穩定性設定
-                disableRange: true,
-                disableStream: true,
-
-                // 4. 視覺模式與介面 (維持專業設定)
+                // 降級為最穩定的 3D 模式 (捨棄 WebGL 避免伺服器材質阻擋)
                 viewMode: '3d',
                 skin: 'dark',
+                
+                // 介面配色與基礎功能
                 deeplinkingPrefix: 'page_',
                 btnSearch: { enabled: true },
                 btnDownloadPdf: { enabled: true },
                 btnPrint: { enabled: true },
-                pageRoughness: 0.8,
-                lightIntensity: 0.7,
                 menuBackground: 'rgba(51, 51, 51, 0.9)',
                 btnColor: '#ffffff',
                 btnBackground: 'transparent',
@@ -71,27 +52,10 @@
 
                 // 繁體中文翻譯
                 strings: {
-                    print: '列印',
-                    printLeftPage: '列印左頁',
-                    printRightPage: '列印右頁',
-                    printCurrentPage: '列印本頁',
-                    printAllPages: '列印全部',
-                    download: '下載',
-                    downloadLeftPage: '下載左頁',
-                    downloadRightPage: '下載右頁',
-                    downloadCurrentPage: '下載本頁',
-                    downloadAllPages: '下載全部型錄',
-                    bookmarks: '書籤',
-                    bookmarkLeftPage: '加入左頁書籤',
-                    bookmarkRightPage: '加入右頁書籤',
-                    bookmarkCurrentPage: '加入本頁書籤',
-                    search: '搜尋',
-                    findInDocument: '在型錄中搜尋...',
-                    pagesFoundContaining: '找到符合結果的頁面：',
-                    thumbnails: '總覽縮圖',
-                    tableOfContent: '目錄',
-                    share: '分享',
-                    pressEscToClose: '按 ESC 鍵關閉',
+                    print: '列印', printLeftPage: '列印左頁', printRightPage: '列印右頁', printCurrentPage: '列印本頁', printAllPages: '列印全部',
+                    download: '下載', downloadLeftPage: '下載左頁', downloadRightPage: '下載右頁', downloadCurrentPage: '下載本頁', downloadAllPages: '下載全部型錄',
+                    bookmarks: '書籤', search: '搜尋', findInDocument: '在型錄中搜尋...', pagesFoundContaining: '找到符合結果的頁面：',
+                    thumbnails: '總覽縮圖', tableOfContent: '目錄', share: '分享', pressEscToClose: '按 ESC 鍵關閉'
                 }
             });
         });
