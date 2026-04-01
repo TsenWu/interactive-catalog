@@ -6,9 +6,14 @@
     <title>金鍏電子 - 互動式產品型錄</title>
 
     <link rel="stylesheet" href="css/flipbook.min.css" />
-    <script src="js/flipbook.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+    <script src="js/libs/pdf.min.js"></script>
+    <script>
+        // 2. 我們親自指派工人位置 (使用相對路徑，避開 CDN 阻擋與外掛 Bug)
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'js/libs/pdf.worker.min.js';
+    </script>
+    <script src="js/flipbook.min.js"></script>
     <style>
         html, body { margin: 0; padding: 0; height: 100%; background-color: #222222; overflow: hidden; display: flex; flex-direction: column; }
         #page-header { height: 60px; background-color: #1a1a1a; display: flex; align-items: center; padding-left: 20px; border-bottom: 1px solid #333; flex-shrink: 0; }
@@ -31,28 +36,22 @@
             const el = document.getElementById('container');
 
             new FlipBook(el, {
-                // 🌟 保持使用您的 PDF 檔案，完美保留文字搜尋功能！
+                // 完美保留您的 PDF，文字搜尋功能滿血復活！
                 pdfUrl: 'test.pdf', 
                 
-                // ==========================================
-                // 🚀 終極破關密碼：全面使用全球 CDN 載入解析器與中文字體庫
-                // 徹底解決 GitHub Pages 的路徑迷路與轉圈圈死鎖！
-                // ==========================================
-                pdfjsLib: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/pdf.min.js',
-                pdfjsWorker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/pdf.worker.min.js',
-                cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/cmaps/',
+                // 🎯 關鍵：提供本地端的繁體中文字體庫，沒有這個，遇到中文必定轉圈卡死
+                cMapUrl: 'assets/cmaps/',
                 cMapPacked: true,
-                
-                // 強迫整包下載，避免分段讀取碎片遺失
+
+                // 避免 GitHub Pages 分段讀取失敗
                 disableRange: true,
                 disableStream: true,
-                // ==========================================
 
                 // 維持最順暢的 3D 模式
                 viewMode: '3d',
                 skin: 'dark',
                 
-                // 實用功能全開 (包含您最需要的搜尋 btnSearch)
+                // 實用功能全開 (放大鏡搜尋按鈕啟動！)
                 deeplinkingPrefix: 'page_',
                 btnSearch: { enabled: true },
                 btnDownloadPdf: { enabled: true },
