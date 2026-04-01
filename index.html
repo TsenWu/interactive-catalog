@@ -8,11 +8,14 @@
     <link rel="stylesheet" href="css/flipbook.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+    <script src="js/libs/three.min.js"></script>
+
     <script src="js/libs/pdf.min.js"></script>
     <script>
-        // 2. 我們親自指派工人位置 (使用相對路徑，避開 CDN 阻擋與外掛 Bug)
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'js/libs/pdf.worker.min.js';
+    // 指定解析工人路徑
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'js/libs/pdf.worker.min.js';
     </script>
+
     <script src="js/flipbook.min.js"></script>
     <script src="js/flipbook.webgl.min.js"></script>
     <style>
