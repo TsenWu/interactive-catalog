@@ -9,17 +9,18 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                const el = document.getElementById('container');
-                new FlipBook(el, {
-                    // 3. 修改 PDF 路徑：改為您的檔案名稱
-                    pdfUrl: './test2.pdf',
-                    
-                    // 4. 補上這三行防呆機制，確保底層解析器不會迷路
-                    pdfWorkerSrc: './js/libs/pdf.worker.min.js',
-                    cMapUrl: './assets/cmaps/',
-                    cMapPacked: true
-                });
-            });
+    const el = document.getElementById('container');
+    new FlipBook(el, {
+        pdfUrl: './test2.pdf',
+        // 必須明確指定 Worker 的位置，否則引擎會因為找不到助手而畫不出圖
+        pdfWorkerSrc: './js/libs/pdf.worker.min.js', 
+        // 即使是圖像版 PDF，有時也需要這行來初始化渲染環境
+        cMapUrl: './assets/cmaps/',
+        cMapPacked: true,
+        // 增加容錯率
+        disableCanvasSideBySide: true 
+    });
+});
         </script>
         
         <style>
