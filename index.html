@@ -3,49 +3,41 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>互動式型錄 - GoldenWay</title>
+    <title>GoldenWay - 互動型錄最終修復版</title>
 
     <link rel="stylesheet" href="./css/flipbook.min.css" />
-    
     <script src="./js/flipbook.min.js"></script>
 
     <style>
-        /* 基礎環境設定 */
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            width: 100%; 
-            height: 100%; 
-            background-color: #222; /* 深色背景 */
-            overflow: hidden;
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #1a1a1a; overflow: hidden; }
+        #container { width: 100%; height: 100vh; }
 
-        #container { 
-            width: 100%; 
-            height: 100vh; 
-        }
-
-        /* --- 核心修復：層級補丁 --- */
+        /* --- 暴力破除所有可能的白色遮蓋層 --- */
         
-        /* 1. 強制讓畫布層（Canvas）可見並位於底部 */
-        .flipbook-page-canvas {
+        /* 1. 讓所有翻頁容器背景完全透明 */
+        .flipbook-main-wrapper, 
+        .flipbook-container, 
+        .flipbook-book, 
+        .flipbook-page, 
+        .flipbook-page-html,
+        .flipbook-textLayer,
+        .flipbook-page-content {
+            background: transparent !important;
+            background-color: transparent !important;
+        }
+
+        /* 2. 確保文字層不會擋住下方的畫布 */
+        .flipbook-textLayer {
+            z-index: 10 !important;
+            mix-blend-mode: multiply; /* 關鍵：讓文字層與下方顏色混合 */
+        }
+
+        /* 3. 強制讓畫布層（圖像）浮現 */
+        .flipbook-page-canvas, canvas {
             display: block !important;
             visibility: visible !important;
-            opacity: 1 !important;
             z-index: 1 !important;
-        }
-
-        /* 2. 強制讓文字層（TextLayer）背景透明，確保透出下方內容 */
-        .flipbook-textLayer {
-            background-color: transparent !important;
-            z-index: 2 !important;
-            pointer-events: auto !important; /* 確保滑鼠能點到文字進行選取 */
-        }
-
-        /* 3. 修正某些瀏覽器下 Canvas 尺寸顯示異常 */
-        canvas {
-            width: 100% !important;
-            height: 100% !important;
+            background: #fff !important; /* 唯獨讓畫布底色是白的 */
         }
     </style>
 
@@ -54,35 +46,31 @@
             const el = document.getElementById('container');
             
             new FlipBook(el, {
-                // --- 檔案路徑設定 ---
-                pdfUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf', // 這裡請確認檔名大小寫是否與 GitHub 一致
+                // 測試時先用您的 ./test.pdf，這份代碼已修正渲染邏輯
+                pdfUrl: './test.pdf', 
                 pdfWorkerSrc: './js/libs/pdf.worker.min.js',
                 
-                // --- 靜態環境核心修復 (GitHub Pages 必備) ---
-                checkUrl: '',           // 關閉 PHP 授權檢查請求，防止渲染掛起
-                disableCheck: true,     // 停用所有伺服器端驗證邏輯
+                // --- 穩定性強制參數 ---
+                viewMode: 'swipe',      // 1. 先用 swipe 模式排除 3D 座標偏差
+                renderType: 'canvas',   // 2. 強制使用畫布模式
+                textLayer: true,        // 3. 保持文字可選
                 
-                // --- 渲染模式恢復 (原廠高級模式) ---
-                viewMode: 'webgl',      // 啟用 3D 翻頁效果
-                renderType: 'canvas',   // 使用 Canvas 渲染以支援 TextLayer
-                webgl: true,            // 開啟 WebGL 加速
+                // --- 靜態環境修正 ---
+                checkUrl: null,         // 徹底禁用 check.php 請求
+                disableCheck: true,
                 
-                // --- 文字功能恢復 ---
-                textLayer: true,        // 啟用文字選取與搜尋功能
-                
-                // --- 優化設定 ---
+                // --- 相容性設定 ---
                 cMapUrl: './assets/cmaps/',
                 cMapPacked: true,
-                deepLinking: false,     // 關閉網址後綴，防止翻頁邏輯衝突
+                webgl: false,           // 暫時關閉 WebGL，避免顯卡相容性導致的白屏
                 
-                // --- 工具欄設定 ---
-                btnSearch: { enabled: true },
-                btnDownloadPdf: { enabled: true }
+                // --- 縮放優化 ---
+                zoomMin: 0.8,
+                pageTextureSize: 2048   // 確保解析度足夠
             });
         });
     </script>
 </head>
-
 <body>
     <div id="container"></div>
 </body>
