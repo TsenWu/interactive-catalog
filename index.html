@@ -1,60 +1,89 @@
 <!doctype html>
-<html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>互動式型錄 - GoldenWay</title>
 
-        <link rel="stylesheet" href="./css/flipbook.min.css" />
+    <link rel="stylesheet" href="./css/flipbook.min.css" />
+    
+    <script src="./js/flipbook.min.js"></script>
+
+    <style>
+        /* 基礎環境設定 */
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: #222; /* 深色背景 */
+            overflow: hidden;
+        }
+
+        #container { 
+            width: 100%; 
+            height: 100vh; 
+        }
+
+        /* --- 核心修復：層級補丁 --- */
         
-        <script src="./js/flipbook.min.js"></script>
+        /* 1. 強制讓畫布層（Canvas）可見並位於底部 */
+        .flipbook-page-canvas {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 1 !important;
+        }
 
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-    const el = document.getElementById('container');
-    new FlipBook(el, {
-    pdfUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
-    pdfWorkerSrc: './js/libs/pdf.worker.min.js',
-    
-    // --- 診斷測試：暫時關閉文字層 ---
-    // 如果關閉後圖片出現了，就代表是文字層變成了白牆蓋住了圖片
-    textLayer: false, 
-    
-    // --- 換一種顯示模式試試看 ---
-    // 'css' 模式通常比 'canvas' 更穩定，雖然效能稍低但相容性最強
-    renderType: 'css', 
-    
-    // 確保關閉 PHP 驗證
-    checkUrl: '', 
-    
-    // 解決層級問題
-    webgl: false,
-    viewMode: 'swipe' // 換成最基礎的滑動模式測試渲染
-});
-});
-        </script>
-        
-        <style>
-            body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #333; }
-            #container { width: 100%; height: 100vh; }
-            /* 強制讓文字層背景透明，確保下方的畫布能透出來 */
-.flipbook-textLayer {
-    background-color: transparent !important;
-}
+        /* 2. 強制讓文字層（TextLayer）背景透明，確保透出下方內容 */
+        .flipbook-textLayer {
+            background-color: transparent !important;
+            z-index: 2 !important;
+            pointer-events: auto !important; /* 確保滑鼠能點到文字進行選取 */
+        }
 
-/* 確保畫布（Canvas）不會被隱藏 */
-.flipbook-page-canvas {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
+        /* 3. 修正某些瀏覽器下 Canvas 尺寸顯示異常 */
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+    </style>
 
-/* 避免 GitHub Pages 的某些預設背景干擾 */
-#container {
-    background-color: #333 !important; /* 換成深色背景更容易看出白色頁面在哪 */
-}
-        </style>
-    </head>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const el = document.getElementById('container');
+            
+            new FlipBook(el, {
+                // --- 檔案路徑設定 ---
+                pdfUrl: './test.pdf', // 這裡請確認檔名大小寫是否與 GitHub 一致
+                pdfWorkerSrc: './js/libs/pdf.worker.min.js',
+                
+                // --- 靜態環境核心修復 (GitHub Pages 必備) ---
+                checkUrl: '',           // 關閉 PHP 授權檢查請求，防止渲染掛起
+                disableCheck: true,     // 停用所有伺服器端驗證邏輯
+                
+                // --- 渲染模式恢復 (原廠高級模式) ---
+                viewMode: 'webgl',      // 啟用 3D 翻頁效果
+                renderType: 'canvas',   // 使用 Canvas 渲染以支援 TextLayer
+                webgl: true,            // 開啟 WebGL 加速
+                
+                // --- 文字功能恢復 ---
+                textLayer: true,        // 啟用文字選取與搜尋功能
+                
+                // --- 優化設定 ---
+                cMapUrl: './assets/cmaps/',
+                cMapPacked: true,
+                deepLinking: false,     // 關閉網址後綴，防止翻頁邏輯衝突
+                
+                // --- 工具欄設定 ---
+                btnSearch: { enabled: true },
+                btnDownloadPdf: { enabled: true }
+            });
+        });
+    </script>
+</head>
 
-    <body>
-        <div id="container"></div>
-    </body>
+<body>
+    <div id="container"></div>
+</body>
 </html>
