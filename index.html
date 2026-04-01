@@ -1,85 +1,46 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>金鍏電子 - 互動式產品型錄</title>
-
-    <link rel="stylesheet" href="css/flipbook.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動式產品型錄測試</title>
+    
+    <link rel="stylesheet" href="./css/flipbook.min.css">
+    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="js/libs/three.min.js"></script>
-
-    <script src="js/libs/pdf.min.js"></script>
+    <script src="./js/libs/three.min.js"></script>
+    
+    <script src="./js/libs/pdf.min.js"></script>
     <script>
-    // 指定解析工人路徑
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'js/libs/pdf.worker.min.js';
+        // 嚴格指定解析工人路徑
+        pdfjsLib.GlobalWorkerOptions.workerSrc = './js/libs/pdf.worker.min.js';
     </script>
+    
+    <script src="./js/flipbook.min.js"></script>
+    <script src="./js/flipbook.webgl.min.js"></script>
 
-    <script src="js/flipbook.min.js"></script>
-    <script src="js/flipbook.webgl.min.js"></script>
     <style>
-        html, body { margin: 0; padding: 0; height: 100%; background-color: #222222; overflow: hidden; display: flex; flex-direction: column; }
-        #page-header { height: 60px; background-color: #1a1a1a; display: flex; align-items: center; padding-left: 20px; border-bottom: 1px solid #333; flex-shrink: 0; }
-        #custom-logo { height: 40px; width: auto; }
-        #container { flex-grow: 1; width: 100vw; position: relative; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #333; }
+        #container { width: 100%; height: 100vh; display: block; }
     </style>
 </head>
-
 <body>
-    <div id="page-header">
-        <a href="https://www.goldenwayled.com/" target="_blank">
-            <img id="custom-logo" src="GW_logo_W.png" alt="Goldenway Logo">
-        </a>
-    </div>
-
     <div id="container"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const el = document.getElementById('container');
-
-            new FlipBook(el, {
-                // 完美保留您的 PDF，文字搜尋功能滿血復活！
-                pdfUrl: 'test.pdf', 
-
-                // 新增腳本基礎路徑，引導程式正確定位 js 資料夾
-                scriptBasePath: 'js/',
+        $(document).ready(function () {
+            $("#container").flipBook({
+                pdfUrl: './test.pdf',
                 
-                // 🎯 關鍵：提供本地端的繁體中文字體庫，沒有這個，遇到中文必定轉圈卡死
-                cMapUrl: 'assets/cmaps/',
-                cMapPacked: true,
-
-                // 避免 GitHub Pages 分段讀取失敗
-                disableRange: true,
-                disableStream: true,
-
-                // 維持最順暢的 3D 模式
+                // 採用 2D 模式作為基準測試
                 viewMode: '2d',
-                skin: 'dark',
                 
-                // 實用功能全開 (放大鏡搜尋按鈕啟動！)
-                deeplinkingPrefix: 'page_',
-                btnSearch: { enabled: true },
-                btnDownloadPdf: { enabled: true },
-                btnPrint: { enabled: true },
+                // 確保字體對應表路徑正確
+                cMapUrl: './assets/cmaps/',
+                cMapPacked: true,
                 
-                // 介面配色
-                menuBackground: 'rgba(51, 51, 51, 0.9)',
-                btnColor: '#ffffff',
-                btnBackground: 'transparent',
-                btnMargin: 0,
-                sideBtnBackground: 'rgba(0,0,0,0.3)',
-                sideBtnColor: '#ffffff',
-
-                // 繁體中文翻譯
-                strings: {
-                    print: '列印', printLeftPage: '列印左頁', printRightPage: '列印右頁', printCurrentPage: '列印本頁', printAllPages: '列印全部',
-                    download: '下載', downloadLeftPage: '下載左頁', downloadRightPage: '下載右頁', downloadCurrentPage: '下載本頁', downloadAllPages: '下載全部型錄',
-                    bookmarks: '書籤', search: '搜尋', findInDocument: '輸入料號或產品名稱...', pagesFoundContaining: '找到符合結果的頁面：',
-                    thumbnails: '總覽縮圖', tableOfContent: '目錄', share: '分享', pressEscToClose: '按 ESC 鍵關閉'
-                }
+                // 明確指定腳本資料夾
+                scriptBasePath: './js/'
             });
         });
     </script>
