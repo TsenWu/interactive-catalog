@@ -3,59 +3,49 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GoldenWay - 深度修復測試</title>
+    <title>GoldenWay 型錄修復 - 最終版</title>
 
     <link rel="stylesheet" href="./css/flipbook.min.css" />
     <script src="./js/flipbook.min.js"></script>
 
     <style>
-        /* 基礎黑背景 */
-        body, html { background-color: #1a1a1a !important; margin: 0; }
-        #container { width: 100%; height: 100vh; }
-
-        /* --- 核心修復：把所有翻頁套件的「白牆」全部推倒 --- */
-        
-        /* 強制將所有 flipbook 開頭的元件背景設為透明 */
-        [class^="flipbook-"] {
-            background-color: transparent !important;
-            background: transparent !important;
+        /* 1. 給予一個乾淨、明亮的舞台 */
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background-color: #f0f0f0; /* 改用淺灰色背景，方便區分 */
+        }
+        #container { 
+            width: 100%; 
+            height: 100vh; 
+            background-color: #fff; /* 確保容器本身是白的 */
         }
 
-        /* 唯獨讓畫布層（Canvas）強行顯示在最前方 */
+        /* 2. 只做最必要的 CSS 修正，不破壞原廠結構 */
         .flipbook-page-canvas, canvas {
             display: block !important;
             visibility: visible !important;
-            opacity: 1 !important;
-            z-index: 5 !important; /* 確保它在中間層 */
-            background-color: #fff !important; /* 畫布底色設為白，確保圖片清晰 */
-        }
-
-        /* 讓文字層疊在最上面，但不准有背景色 */
-        .flipbook-textLayer {
-            z-index: 10 !important;
-            background: none !important;
-            background-color: transparent !important;
         }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             new FlipBook(document.getElementById('container'), {
+                // 先用您的檔案測試
                 pdfUrl: './test.pdf', 
                 pdfWorkerSrc: './js/libs/pdf.worker.min.js',
                 
-                // 關閉 3D 複雜光影，先確保看得到內容
-                viewMode: 'swipe', 
-                renderType: 'canvas',
+                // --- 核心修復：徹底阻斷伺服器請求 ---
+                checkUrl: 'none',       // 不要留空，隨便填一個不存在的字串
+                disableCheck: true,     // 禁用授權檢查
                 
-                // 徹底關閉 PHP 請求，防止 check.php 返回 HTML 錯誤內容
-                checkUrl: 'ignore_me', 
+                // --- 渲染模式：使用最穩定的配置 ---
+                viewMode: 'swipe',      // 優先使用滑動模式，這對圖像 PDF 最穩定
+                singlePageMode: true,   // 先用單頁模式確保畫面能出來
+                renderType: 'canvas',   // 使用畫布渲染
+                textLayer: true,        // 保留文字功能
                 
-                // 提高渲染權重
-                textLayer: true,
-                webgl: false,
-                
-                // 字體對應檔
+                // --- 相容性優化 ---
+                webgl: false,           // 關閉 WebGL 以排除顯示卡硬體加速干擾
                 cMapUrl: './assets/cmaps/',
                 cMapPacked: true
             });
