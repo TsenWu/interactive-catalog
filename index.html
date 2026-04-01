@@ -1,48 +1,34 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>互動式產品型錄測試</title>
-    
-    <link rel="stylesheet" href="./css/flipbook.min.css">
-    
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="./js/libs/three.min.js"></script>
-    
-    <script src="./js/libs/pdf.min.js"></script>
-    <script>
-        // 嚴格指定解析工人路徑
-        pdfjsLib.GlobalWorkerOptions.workerSrc = './js/libs/pdf.worker.min.js';
-    </script>
-    
-    <script src="./js/flipbook.min.js"></script>
-    <script src="./js/flipbook.webgl.min.js"></script>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #333; }
-        #container { width: 100%; height: 100vh; display: block; }
-    </style>
-</head>
-<body>
-    <div id="container"></div>
+        <link rel="stylesheet" href="./css/flipbook.min.css" />
+        
+        <script src="./js/flipbook.min.js"></script>
 
-    <script>
-        $(document).ready(function () {
-            $("#container").flipBook({
-                pdfUrl: './test.pdf',
-                
-                // 採用 2D 模式作為基準測試
-                viewMode: '2d',
-                
-                // 確保字體對應表路徑正確
-                cMapUrl: './assets/cmaps/',
-                cMapPacked: true,
-                
-                // 明確指定腳本資料夾
-                scriptBasePath: './js/'
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const el = document.getElementById('container');
+                new FlipBook(el, {
+                    // 3. 修改 PDF 路徑：改為您的檔案名稱
+                    pdfUrl: './test.pdf',
+                    
+                    // 4. 補上這三行防呆機制，確保底層解析器不會迷路
+                    pdfWorkerSrc: './js/libs/pdf.worker.min.js',
+                    cMapUrl: './assets/cmaps/',
+                    cMapPacked: true
+                });
             });
-        });
-    </script>
-</body>
+        </script>
+        
+        <style>
+            body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #333; }
+            #container { width: 100%; height: 100vh; }
+        </style>
+    </head>
+
+    <body>
+        <div id="container"></div>
+    </body>
 </html>
