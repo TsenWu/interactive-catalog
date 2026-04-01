@@ -30,19 +30,35 @@
         document.addEventListener('DOMContentLoaded', () => {
             const el = document.getElementById('container');
 
-            // 🌟 拔除所有路徑綁架，讓原廠引擎自己去資料夾裡找工具！
             new FlipBook(el, {
+                // 🌟 保持使用您的 PDF 檔案，完美保留文字搜尋功能！
                 pdfUrl: 'test.pdf', 
                 
-                // 降級為最穩定的 3D 模式 (捨棄 WebGL 避免伺服器材質阻擋)
+                // ==========================================
+                // 🚀 終極破關密碼：全面使用全球 CDN 載入解析器與中文字體庫
+                // 徹底解決 GitHub Pages 的路徑迷路與轉圈圈死鎖！
+                // ==========================================
+                pdfjsLib: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/pdf.min.js',
+                pdfjsWorker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/pdf.worker.min.js',
+                cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/cmaps/',
+                cMapPacked: true,
+                
+                // 強迫整包下載，避免分段讀取碎片遺失
+                disableRange: true,
+                disableStream: true,
+                // ==========================================
+
+                // 維持最順暢的 3D 模式
                 viewMode: '3d',
                 skin: 'dark',
                 
-                // 介面配色與基礎功能
+                // 實用功能全開 (包含您最需要的搜尋 btnSearch)
                 deeplinkingPrefix: 'page_',
                 btnSearch: { enabled: true },
                 btnDownloadPdf: { enabled: true },
                 btnPrint: { enabled: true },
+                
+                // 介面配色
                 menuBackground: 'rgba(51, 51, 51, 0.9)',
                 btnColor: '#ffffff',
                 btnBackground: 'transparent',
@@ -54,7 +70,7 @@
                 strings: {
                     print: '列印', printLeftPage: '列印左頁', printRightPage: '列印右頁', printCurrentPage: '列印本頁', printAllPages: '列印全部',
                     download: '下載', downloadLeftPage: '下載左頁', downloadRightPage: '下載右頁', downloadCurrentPage: '下載本頁', downloadAllPages: '下載全部型錄',
-                    bookmarks: '書籤', search: '搜尋', findInDocument: '在型錄中搜尋...', pagesFoundContaining: '找到符合結果的頁面：',
+                    bookmarks: '書籤', search: '搜尋', findInDocument: '輸入料號或產品名稱...', pagesFoundContaining: '找到符合結果的頁面：',
                     thumbnails: '總覽縮圖', tableOfContent: '目錄', share: '分享', pressEscToClose: '按 ESC 鍵關閉'
                 }
             });
