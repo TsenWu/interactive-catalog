@@ -1,58 +1,84 @@
-<!doctype html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GoldenWay 型錄修復 - 最終版</title>
+<!DOCTYPE html>
+<html lang="zh-Hant"> <head>
+    <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>金緯電子 - 溫室氣體盤查報告書</title> <link rel="stylesheet" href="css/flipbook.min.css"> <style>
+        /* 基礎環境設定 */
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #333; } /* 滿版且隱藏捲軸 */
+        #container { width: 100%; height: 100vh; } /* 建立 3D 畫布容器 */
 
-    <link rel="stylesheet" href="./css/flipbook.min.css" />
-    <script src="./js/flipbook.min.js"></script>
+        /* 自定義浮動 Logo 定位 */
+        .custom-logo-overlay {
+            position: absolute; /* 使用絕對定位 */
+            bottom: 65px; /* 浮動於底部工具欄上方紅框處 */
+            left: 50%; /* 水平居中 */
+            transform: translateX(-50%); /* 精確修正居中偏移量 */
+            z-index: 999999; /* 確保 Logo 始終顯示在最上層 */
+            pointer-events: none; /* 防止 Logo 擋住翻頁點擊動作 */
 
-    <style>
-        /* 1. 給予一個乾淨、明亮的舞台 */
-        body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            background-color: #f0f0f0; /* 改用淺灰色背景，方便區分 */
+            /* ✨ 新增：半透明黑底設定 */
+            background-color: rgba(0, 0, 0, 0.6); /* 設定 60% 透明度的黑色背景 (RGBA) */
+            padding: 10px 20px; /* 為 Logo 四週增加內邊距，使其更有空間感 */
+            border-radius: 10px; /* 增加圓角效果，使其視覺更柔和 */
         }
-        #container { 
-            width: 100%; 
-            height: 100vh; 
-            background-color: #fff; /* 確保容器本身是白的 */
+        .custom-logo-overlay img {
+            height: 20px; /* 設定 Logo 顯示高度 */
+            /* 移除原本的 opacity 設置，讓 Logo 本身清晰不透明 */
         }
 
-        /* 2. 只做最必要的 CSS 修正，不破壞原廠結構 */
-        .flipbook-page-canvas, canvas {
-            display: block !important;
-            visibility: visible !important;
+        /* 修復 CSS 相容性警告 */
+        input[type=range] {
+            -webkit-appearance: none; /* Chrome/Safari 專屬前綴 */
+            appearance: none; /* 標準屬性，消除 VS Code 警告 */
         }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; /* 移除滑塊預設樣式 */
+            appearance: none; /* 修復滑塊相容性警告 */
+        }
+
+        /* 資安防護：防止畫布被長按或右鍵 */
+        canvas { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
     </style>
+</head>
+<body>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            new FlipBook(document.getElementById('container'), {
-                // 先用您的檔案測試
-                pdfUrl: './test.pdf', 
-                pdfWorkerSrc: './js/libs/pdf.worker.min.js',
+    <div id="container"></div>
+
+    <div class="custom-logo-overlay">
+        <img src="GW_logo_W.png" alt="Golden Way Logo"> </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> <script src="js/flipbook.min.js"></script> <script>
+        $(document).ready(function () {
+            // 禁止全頁右鍵選單以保護報告內容
+            $(document).bind("contextmenu", function() { return false; });
+
+            // 初始化金緯電子報告書設定
+            $("#container").flipBook({
+                pdfUrl: "2023_GW_Greenhouse_Gas_Inventory_Report.pdf", // PDF 檔案路徑
+                assetsPath: "assets/", // 資源檔案存放路徑
+                libPath: "assets/", // 庫檔案存放路徑
                 
-                // --- 核心修復：徹底阻斷伺服器請求 ---
-                checkUrl: 'none',       // 不要留空，隨便填一個不存在的字串
-                disableCheck: true,     // 禁用授權檢查
+                // 視覺與佈局設定
+                layout: 1, // 切換至 Layout 1 佈局
+                skin: 'gradient', // 套用漸層皮膚質感
+                viewMode: "webgl", // 開啟高品質 3D 渲染模式
                 
-                // --- 渲染模式：使用最穩定的配置 ---
-                viewMode: 'swipe',      // 優先使用滑動模式，這對圖像 PDF 最穩定
-                singlePageMode: true,   // 先用單頁模式確保畫面能出來
-                renderType: 'canvas',   // 使用畫布渲染
-                textLayer: true,        // 保留文字功能
+                // 關閉插件內建 Logo，由外部 HTML 控管位置
+                btnLogo: { enabled: false }, 
+                logoUrl: "",
+
+                // 功能按鈕權限控管 (依據企業規範關閉)
+                btnDownload: { enabled: false }, // 禁止下載
+                btnPrint: { enabled: false }, // 禁止列印
+                btnShare: { enabled: false }, // 禁止社群分享
                 
-                // --- 相容性優化 ---
-                webgl: false,           // 關閉 WebGL 以排除顯示卡硬體加速干擾
-                cMapUrl: './assets/cmaps/',
-                cMapPacked: true
+                // 啟用導覽相關功能
+                btnFirst: { enabled: true, title: "回首頁" }, // 顯示首頁按鈕
+                btnLast: { enabled: true, title: "末頁" }, // 顯示末頁按鈕
+                btnToc: { enabled: true }, // 顯示目錄按鈕
+                btnThumbs: { enabled: true }, // 顯示縮圖按鈕
+                btnSearch: { enabled: true }, // 顯示搜尋按鈕
+                btnExpand: { enabled: true } // 顯示全螢幕按鈕
             });
         });
     </script>
-</head>
-<body>
-    <div id="container"></div>
 </body>
 </html>
