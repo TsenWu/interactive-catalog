@@ -3,15 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GoldenWay 型錄最終修復</title>
+    <title>GoldenWay 型錄修復</title>
 
     <link rel="stylesheet" href="./css/flipbook.min.css" />
     <script src="./js/flipbook.min.js"></script>
 
     <style>
-        body, html { margin: 0; padding: 0; background-color: #333 !important; }
-        #container { width: 100%; height: 100vh; background-color: #333 !important; }
-        
+        body, html { margin: 0; padding: 0; background-color: #333; }
+        #container { width: 100%; height: 100vh; }
         /* 確保畫布（圖像）一定浮現出來 */
         .flipbook-page-canvas, canvas {
             display: block !important;
@@ -19,33 +18,35 @@
             background-color: #ffffff !important;
         }
     </style>
+</head>
+
+<body>
+    <div id="container"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             new FlipBook(document.getElementById('container'), {
+                // 指向您的報告檔案
                 pdfUrl: './2023_GW_Greenhouse_Gas_Inventory_Report.pdf', 
                 
-                // --- 核心修正：使用 Mozilla 官方最強解析引擎 ---
+                // 使用雲端最強解析引擎，解決字體報錯問題
                 pdfWorkerSrc: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js',
                 
-                // --- 解決中文字體報錯的關鍵設定 ---
-                cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/cmaps/',
-                cMapPacked: true,
-
+                // 徹底阻斷 check.php 請求，防止 GitHub/Netlify 卡死
+                checkUrl: 'ignore_me', 
+                disableCheck: true,
+                
                 // 穩定性設定
                 viewMode: 'swipe',
                 renderType: 'canvas',
-                textLayer: true, // 保持文字功能
+                textLayer: true,
+                webgl: false,
                 
-                // 靜態環境修正
-                checkUrl: 'ignore', 
-                disableCheck: true,
-                webgl: false
+                // 支援中文字體顯示
+                cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/cmaps/',
+                cMapPacked: true
             });
         });
     </script>
-</head>
-<body>
-    <div id="container"></div>
 </body>
 </html>
