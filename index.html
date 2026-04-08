@@ -2,76 +2,46 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Golden Way - 互動型錄最終修復版</title>
-
+    <title>Golden Way - 授權激活正式版</title>
     <link rel="stylesheet" href="./css/flipbook.min.css" />
     <script src="./js/flipbook.min.js"></script>
-
     <style>
-        /* 強制背景與佈局穩定性 */
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            background-color: #333 !important; 
-            height: 100%; 
-            overflow: hidden; 
-        }
+        body, html { margin: 0; background-color: #333 !important; }
         #container { width: 100%; height: 100vh; }
-
-        /* --- 物理級修正：強制 PDF 畫布顯現 --- */
-        canvas {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            background-color: #ffffff !important;
-            z-index: 1 !important;
-        }
-
-        /* 確保文字選取層透明，不遮擋底圖 */
-        .flipbook-textLayer, .flipbook-page-html, .flipbook-page-content {
-            background-color: transparent !important;
-            background: none !important;
-            z-index: 2 !important;
+        /* 強制讓 Canvas 浮現 */
+        canvas { 
+            display: block !important; 
+            visibility: visible !important; 
+            background-color: #fff !important; 
         }
     </style>
 </head>
-
 <body>
     <div id="container"></div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             new FlipBook(document.getElementById('container'), {
-                // --- A. 檔案路徑 (請依需求修改檔名) ---
-                pdfUrl: './sample.pdf', 
+                pdfUrl: 'https://tsenwu.github.io/interactive-catalog/sample.pdf', 
                 
-                // --- B. 核心引擎 (使用雲端穩定版，解決本地 JS 損壞問題) ---
+                // --- 關鍵：填入您的購買代碼，幫助外掛確認授權 ---
+                purchaseCode: '0a7fab87-ae7d-4e64-8f9b-c589835f37a7',
+                
+                // 雲端最強引擎，避開字體渲染崩潰
                 pdfWorkerSrc: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js',
                 
-                // --- C. 解決 TT: undefined function 字體報錯 ---
-                disableFontFace: true, 
-                
-                // --- D. 解決中文字體顯示 (CMap) ---
-                cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/cmaps/',
-                cMapPacked: true,
-
-                // --- E. 靜態環境優化 (繞過 GitHub 不支援的 PHP 授權檢查) ---
-                checkUrl: 'ignore_php_request', 
+                // 徹底無視本地 check.php
+                checkUrl: '', 
                 disableCheck: true,
                 
-                // --- F. 渲染與功能設定 ---
-                viewMode: 'webgl',        // 啟動 3D 翻頁效果
-                renderType: 'canvas',     // 使用畫布渲染
-                textLayer: true,          // 支援文字選取與搜尋
-                btnSearch: { enabled: true }, 
+                // 穩定渲染設定
+                renderType: 'canvas',
+                viewMode: 'swipe', 
+                textLayer: true,
                 
-                // --- G. 穩定性降級措施 ---
-                webgl: false,             // 若 3D 仍白屏，此項可強制關閉 GPU 加速
-                singlePageMode: false,    // 預設雙頁顯示
-                
-                // 下載按鈕指向原始 PDF
-                btnDownloadPdf: { enabled: true, url: './sample.pdf' }
+                // 再次強制禁用字體以防萬一
+                disableFontFace: true,
+                cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/cmaps/',
+                cMapPacked: true
             });
         });
     </script>
