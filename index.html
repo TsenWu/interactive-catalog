@@ -2,48 +2,151 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="utf-8">
-    <title>Golden Way - 授權激活正式版</title>
-    <link rel="stylesheet" href="./css/flipbook.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Golden Way - 溫室氣體盤查報告書</title>
+
+    <link rel="stylesheet" type="text/css" href="./css/flipbook.min.css" />
     <script src="./js/flipbook.min.js"></script>
-    <style>
-        body, html { margin: 0; background-color: #333 !important; }
-        #container { width: 100%; height: 100vh; }
-        /* 強制讓 Canvas 浮現 */
-        canvas { 
-            display: block !important; 
-            visibility: visible !important; 
-            background-color: #fff !important; 
-        }
-    </style>
-</head>
-<body>
-    <div id="container"></div>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            new FlipBook(document.getElementById('container'), {
-                pdfUrl: 'https://tsenwu.github.io/interactive-catalog/2023_GW_Greenhouse_Gas_Inventory_Report.pdf', 
-                
-                // --- 關鍵：填入您的購買代碼，幫助外掛確認授權 ---
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const el = document.getElementById('container');
+            const options = {
+                // --- 1. 核心檔案與授權 ---
+                pdfUrl: './2023_GW_Greenhouse_Gas_Inventory_Report.pdf', 
                 purchaseCode: '0a7fab87-ae7d-4e64-8f9b-c589835f37a7',
                 
-                // 雲端最強引擎，避開字體渲染崩潰
+                // --- 2. 穩定渲染引擎 ---
                 pdfWorkerSrc: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js',
-                
-                // 徹底無視本地 check.php
                 checkUrl: '', 
                 disableCheck: true,
-                
-                // 穩定渲染設定
                 renderType: 'canvas',
                 viewMode: 'swipe', 
                 textLayer: true,
-                
-                // 再次強制禁用字體以防萬一
                 disableFontFace: true,
                 cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/cmaps/',
-                cMapPacked: true
-            });
+                cMapPacked: true,
+
+                // --- 3. 介面與按鈕佈局 ---
+                skin: 'gradient',
+                currentPage: { vAlign: 'top', hAlign: 'left' }, // 頁碼置左上
+                btnFirst: { enabled: true, vAlign: 'center', hAlign: 'left', icon: 'fa-angle-double-left' }, // 左側首頁鍵
+                btnLast: { enabled: true, vAlign: 'center', hAlign: 'right', icon: 'fa-angle-double-right' }, // 右側末頁鍵
+
+                // 底部中央工具列配置
+                btnZoomIn: { vAlign: 'bottom', hAlign: 'center' },
+                btnZoomOut: { vAlign: 'bottom', hAlign: 'center' },
+                btnToc: { vAlign: 'bottom', hAlign: 'center' },
+                btnThumbs: { vAlign: 'bottom', hAlign: 'center' },
+                btnShare: { vAlign: 'bottom', hAlign: 'center' },
+                btnBookmark: { vAlign: 'bottom', hAlign: 'center' },
+                btnExpand: { vAlign: 'bottom', hAlign: 'center' },
+                btnPrint: { vAlign: 'bottom', hAlign: 'center' },
+                btnDownloadPdf: { vAlign: 'bottom', hAlign: 'center' },
+                btnSound: { vAlign: 'bottom', hAlign: 'center' },
+                
+                // 工具列樣式屬性
+                menuMargin: 0,
+                menuTransparent: false,
+                menuOverBook: false, // 讓書本不被底欄遮擋
+                btnColor: '#FFFFFF', 
+                btnRadius: 0
+            };
+            new FlipBook(el, options);
         });
     </script>
+    <style>
+        /* --- A. 基礎畫布設定 --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333 !important; 
+            height: 100% !important;
+        }
+        #container { width: 100%; height: 100vh; }
+        
+        /* 強制 Canvas 顯示與設定深灰底色 */
+        canvas { 
+            display: block !important; 
+            visibility: visible !important; 
+            background-color: #494949 !important; 
+        }
+
+        /* --- B. 頂部中央 Logo 區塊 --- */
+        .top-center-logo {
+            position: absolute;
+            top: 15px; 
+            left: 50%;
+            transform: translateX(-50%); 
+            background-color: rgba(0, 0, 0, 0.7); 
+            padding: 6px 20px; 
+            border-radius: 4px; 
+            z-index: 150; 
+            pointer-events: none; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .top-center-logo img { height: 22px; width: auto; display: block; }
+
+        /* --- C. RWD 手機版自適應 --- */
+        @media (max-width: 768px) {
+            .top-center-logo { top: 10px; padding: 4px 15px; }
+            .top-center-logo img { height: 16px; }
+        }
+
+        /* --- D. 左上角頁碼樣式 --- */
+        .flipbook-currentPage {
+            background-color: rgba(0, 0, 0, 0.7) !important;
+            color: #ffffff !important;
+            padding: 6px 15px !important;
+            border-radius: 4px !important;
+            top: 15px !important;
+            left: 15px !important;
+            font-family: Arial, sans-serif !important;
+            font-size: 14px !important;
+            z-index: 100 !important;
+        }
+
+        /* --- E. 底部全寬漸層工具列 --- */
+        .flipbook-menu-bottom {
+            background: linear-gradient(to top, rgba(40,40,40,0.8) 0%, rgba(0,0,0,1) 100%) !important;
+            height: 60px !important;
+            width: 100% !important;
+            left: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- F. 側邊跳轉按鈕 (首頁/末頁) --- */
+        .flipbook-btnFirst, .flipbook-btnLast {
+            background: rgba(0, 0, 0, 0.3) !important;
+            border-radius: 50% !important;
+            padding: 10px !important;
+            margin: 10px 15px !important;
+            position: relative !important;
+            top: 20px !important;
+        }
+
+        /* --- G. 全局按鈕統一設定 --- */
+        .flipbook-btn {
+            background: none !important;
+            color: #ffffff !important;
+            font-size: 20px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-center-logo">
+        <img src="./GW_logo_W.png" alt="Golden Way Logo">
+    </div>
+    
+    <div id="container"></div>
 </body>
 </html>
