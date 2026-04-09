@@ -19,66 +19,76 @@
                 // --- 1. 核心檔案與授權 ---
                 // 指定要載入的 PDF 檔案路徑 (相對路徑)
                 pdfUrl: './2023_GW_Greenhouse_Gas_Inventory_Report.pdf', 
-                // 外掛正版授權碼：【目前維持註釋狀態，排除 AdGuard 對授權請求的攔截】
+                // 外掛正版授權碼：填入後可解除浮水印並啟用完整商業功能
                 // purchaseCode: '0a7fab87-ae7d-4e64-8f9b-c589835f37a7',
                 
                 // --- 2. 穩定渲染引擎 (防崩潰與效能優化) ---
-                // PDF.js 核心引擎來源：使用本地路徑，避免跨網域被廣告阻擋器攔截
+                // PDF.js 核心引擎來源：指向 GitHub 內 js/libs/ 資料夾下的這個檔案
                 pdfWorkerSrc: './js/libs/pdf.worker.min.js',
-                // 關閉本地端 PHP 檢查
+                // 關閉本地端 PHP 檢查：適合部署在純靜態網頁空間 (如 Vercel、GitHub Pages)
                 checkUrl: '', 
                 disableCheck: true,
-                
-                // 【核心修正 A】：切換回 'canvas' 模式。搭配下方關閉文字層，能讓內容最不容易被擋。
-                renderType: 'canvas',
+                // 渲染模式：'canvas' (畫布渲染，效能最佳，文字縮放不失真) / 'html' (DOM 渲染)
+                renderType: 'html',
                 
                 // 瀏覽模式：
-                // 【核心修正 B】：維持 'swipe' 水平滑動。這是最穩定的模式，避開 WebGL 可能被攔截的風險。
+                // 'webgl' (3D 擬真翻頁，具備物理陰影與紙張彎曲感)
+                // 'swipe' (水平平滑滑動，無 3D 特效，最適合手機閱讀)
+                // 'scrolling' (垂直捲動，像一般網頁往下看)
+                // 'simple' (無特效單頁展示)
                 viewMode: 'swipe',
                 
-                // 單頁模式設定
-                singlePageMode: false, 
-                singlePageModeMobile: true, 
+                // 單頁模式設定：適合強制單面閱讀的排版
+                singlePageMode: false, // 電腦版是否強制為單面 (預設雙面展開)
+                singlePageModeMobile: true, // 偵測到手機螢幕寬度時，自動切換為單面顯示以保證字體大小
 
-                // 【核心修正 C】：設為 false。
-                // 這會移除您看到的「黃色方塊」。雖然暫時不能選取文字，但這是繞過 AdGuard 攔截圖片的最佳方法。
-                textLayer: false, 
+                // 文字層設定：設為 true 允許使用者在畫面上反白選取文字、複製及搜尋
+                textLayer: true,
                 
-                // 中文字體修復機制
-                disableFontFace: true, 
-                cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/cmaps/', 
-                cMapPacked: true, 
+                // 中文字體修復機制：防止 PDF 內嵌的特殊中文字體在網頁上變成方塊或亂碼
+                disableFontFace: true, // 強制忽略 PDF 自帶的損壞字體，改用系統字體渲染
+                cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/cmaps/', // 引入繁體中文編碼解析包
+                cMapPacked: true, // 啟用編碼壓縮提升載入速度
 
                 // --- 3. 介面與按鈕佈局 ---
+                // 基礎佈景主題：'gradient' (漸層黑/灰色調，適合商務專業感) / 'light' (淺色) / 'dark' (深色)
                 skin: 'gradient',
+                
+                // 頁碼標籤定位：vAlign (垂直) 靠頂部，hAlign (水平) 靠左側
                 currentPage: { vAlign: 'top', hAlign: 'left' }, 
+                
+                // 側邊跳轉按鈕 (首尾頁)：啟用並放置於左右兩側垂直置中的位置
                 btnFirst: { enabled: true, vAlign: 'center', hAlign: 'left', icon: 'fa-angle-double-left' }, 
                 btnLast: { enabled: true, vAlign: 'center', hAlign: 'right', icon: 'fa-angle-double-right' }, 
 
                 // --- 4. 底部中央工具列配置 ---
-                btnZoomIn:      { enabled: true, vAlign: 'bottom', hAlign: 'center' }, 
-                btnZoomOut:     { enabled: true, vAlign: 'bottom', hAlign: 'center' }, 
-                btnToc:         { enabled: true, vAlign: 'bottom', hAlign: 'center' }, 
-                btnThumbs:      { enabled: true, vAlign: 'bottom', hAlign: 'center' }, 
-                btnShare:       { enabled: true, vAlign: 'bottom', hAlign: 'center' }, 
-                btnBookmark:    { enabled: true, vAlign: 'bottom', hAlign: 'center' }, 
-                btnExpand:      { enabled: true, vAlign: 'bottom', hAlign: 'center' }, 
-                btnPrint:       { enabled: true, vAlign: 'bottom', hAlign: 'center' }, 
-                btnDownloadPdf: { enabled: true, vAlign: 'bottom', hAlign: 'center' }, 
-                btnSound:       { enabled: true, vAlign: 'bottom', hAlign: 'center' }, 
+                // 控制參數說明：
+                // enabled: true (顯示該按鈕) / false (隱藏該按鈕)
+                // vAlign: 'bottom' (固定在螢幕最下方)
+                // hAlign: 'center' (於下方水平居中排列)
+                btnZoomIn:      { enabled: true, vAlign: 'bottom', hAlign: 'center' }, // 放大畫面
+                btnZoomOut:     { enabled: true, vAlign: 'bottom', hAlign: 'center' }, // 縮小畫面
+                btnToc:         { enabled: true, vAlign: 'bottom', hAlign: 'center' }, // 目錄清單 (Table of Contents)
+                btnThumbs:      { enabled: true, vAlign: 'bottom', hAlign: 'center' }, // 下方彈出分頁縮圖導覽
+                btnShare:       { enabled: true, vAlign: 'bottom', hAlign: 'center' }, // 分享至社群或取得網址
+                btnBookmark:    { enabled: true, vAlign: 'bottom', hAlign: 'center' }, // 新增書籤標記目前頁面
+                btnExpand:      { enabled: true, vAlign: 'bottom', hAlign: 'center' }, // 切換至全螢幕模式
+                btnPrint:       { enabled: true, vAlign: 'bottom', hAlign: 'center' }, // 呼叫印表機列印
+                btnDownloadPdf: { enabled: true, vAlign: 'bottom', hAlign: 'center' }, // 下載完整的 PDF 原始檔
+                btnSound:       { enabled: true, vAlign: 'bottom', hAlign: 'center' }, // 開關翻頁時的紙張摩擦音效
 
-                // 隱藏冗餘的圖片下載選項
-                btnDownloadPages: { enabled: false }, 
+                // 隱藏冗餘的下載選項 (避免與上方 btnDownloadPdf 混淆)
+                btnDownloadPages: { enabled: false }, // 關閉「將每頁轉為圖片並打包成 ZIP 下載」的功能
                 
                 // --- 5. 工具列外觀樣式細部設定 ---
-                menuMargin: 0,           
-                menuTransparent: false,  
-                menuOverBook: false,     
-                btnColor: '#FFFFFF',     
-                btnRadius: 0             
+                menuMargin: 0,           // 選單外部間距：設為 0 讓黑底完全貼齊螢幕最底端，不留空隙
+                menuTransparent: false,  // 透明度開關：設為 false 確保底欄有實體的漸層顏色，不會透出底下的書本
+                menuOverBook: false,     // 物理防遮擋機制：設為 false 強制劃分「書本區」與「底欄區」，確保書本放大時不會被底下的工具列擋住
+                btnColor: '#FFFFFF',     // 按鈕圖標統一顏色：#FFFFFF 代表純白色
+                btnRadius: 0             // 按鈕背景圓角弧度：設為 0 維持專業化方正邊緣，數值越大越圓潤 (例如 10 為微圓角)
             };
             
-            // 執行初始化，將上述 options 設定灌入 container 
+            // 執行初始化，將上述 options 設定灌入 container 容器中
             new FlipBook(el, options);
         });
     </script>
