@@ -23,8 +23,8 @@
                 // purchaseCode: '0a7fab87-ae7d-4e64-8f9b-c589835f37a7',
                 
                 // --- 2. 穩定渲染引擎 (防崩潰與效能優化) ---
-                // PDF.js 核心引擎來源：利用 Cloudflare 雲端 CDN 加速解析，避免瀏覽器卡頓
-                pdfWorkerSrc: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js',
+                // PDF.js 核心引擎來源：指向 GitHub 內 js/libs/ 資料夾下的這個檔案
+                pdfWorkerSrc: './js/libs/pdf.worker.min.js',
                 // 關閉本地端 PHP 檢查：適合部署在純靜態網頁空間 (如 Vercel、GitHub Pages)
                 checkUrl: '', 
                 disableCheck: true,
